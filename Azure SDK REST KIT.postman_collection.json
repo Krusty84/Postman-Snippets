@@ -1,0 +1,638 @@
+{
+	"info": {
+		"_postman_id": "2493eeb8-a60b-4b96-8b43-8e41edd04d26",
+		"name": "Azure SDK REST KIT",
+		"description": "It just for automation and debugging\n\nhttps://docs.microsoft.com/en-us/rest/api/?view=Azure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Technical Data",
+			"item": [
+				{
+					"name": "Get Resource Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let table_template = `\r",
+									" <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\"\r",
+									"        crossorigin=\"anonymous\">\r",
+									"<html>\r",
+									"    <body>\r",
+									"    <div class=\"container-fluid\">\r",
+									"<table class=\"table table-striped\">\r",
+									"  <thead>\r",
+									"    <tr>\r",
+									"      <th scope=\"col\">Group Name</th>\r",
+									"      <th scope=\"col\">Group Location</th>\r",
+									"    </tr>\r",
+									"  </thead>\r",
+									"  <tbody>\r",
+									"   {{#each response.value}}\r",
+									"                <tr>\r",
+									"                    <td>{{name}}</td>\r",
+									"                    <td>{{location}}</td>\r",
+									"                </tr>\r",
+									"    {{/each}}    \r",
+									"  </tbody>\r",
+									"</table>\r",
+									"\r",
+									"</body>\r",
+									"</html>\r",
+									"`;\r",
+									"pm.visualizer.set(table_template, { response: pm.response.json() });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/resourcegroups?api-version=2020-09-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"resourcegroups"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2020-09-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VM`s List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let cards_template = `\r",
+									"<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\"\r",
+									"        crossorigin=\"anonymous\">\r",
+									"    <style type=\"text/css\">\r",
+									"        body { font-size: 12px; background: #eee; padding: 16px;}\r",
+									"        .card { border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,.15); -webkit-box-shadow: 0 4px 10px rgba(0,0,0,.15); -moz-box-shadow: 0 4px 10px rgba(0,0,0,.15);}\r",
+									"        .card-header { border-top-right-radius: 8px; border-top-left-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; text-transform: uppercase;}\r",
+									"        .card-header.micro { background-color: #173F5F; color: #ffffff;}\r",
+									"        .card-header.planning { background-color: #ED553B; color: #ffffff;}\r",
+									"        .card-header.large { background-color: #ED553B; color: #ffffff;}\r",
+									"        .card-header.vmname { background-color: #20639B; color: #ffffff;}\r",
+									"        .card-header.vmlocation { background-color: #F6D55C;}\r",
+									"        .card-header.contract { background-color: #3CAEA3; color: #ffffff;}\r",
+									"        .card-header.proprietor { background-color: #ED553B; color: #ffffff;}\r",
+									"        .card-header.bar { background-color: #ED553B; color: #ffffff;}\r",
+									"    </style>\r",
+									"    <div class=\"container-fluid\">\r",
+									"        <div class=\"row\">\r",
+									"            <div class=\"col mb-4\">\r",
+									"                <h1>Virtual Machines</h1>\r",
+									"            </div>\r",
+									"        </div>\r",
+									"        <div class=\"row\">\r",
+									"            {{#each response.value}}\r",
+									"            <div class=\"col-sm-6 col-lg-4 col-xl-3 mb-5\">\r",
+									"                <div class=\"card\">\r",
+									"                    <div class=\"test card-header card-img-top vmname\">Name:&nbsp;&nbsp;{{name}}</div>\r",
+									"                    <div class=\"test card-header card-img-top vmlocation\">Location:&nbsp;&nbsp;{{location}}</div>\r",
+									"                    <div class=\"card-body\">\r",
+									"                         <p class=\"card-header.micro\">Hardware Type:&nbsp;&nbsp;{{properties.hardwareProfile.vmSize}}</p>\r",
+									"                         <p class=\"card-header.micro\">Type OS:&nbsp;&nbsp;{{properties.storageProfile.osDisk.osType}}</p>\r",
+									"                         <p class=\"card-header.micro\">Disk Type:&nbsp;{{properties.storageProfile.osDisk.managedDisk.storageAccountType}}</p>\r",
+									"                         <p class=\"card-header.micro\">Disk Size:&nbsp;&nbsp;{{properties.storageProfile.osDisk.diskSizeGB}}GB</p>\r",
+									"                    </div>\r",
+									"                </div>\r",
+									"            </div>\r",
+									"            {{/each}}\r",
+									"        </div>\r",
+									"    </div>\r",
+									"`;\r",
+									"pm.visualizer.set(cards_template, { response: pm.response.json() });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.Compute/virtualMachines?api-version=2021-07-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.Compute",
+								"virtualMachines"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-07-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Networks List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.Network/networkInterfaces?api-version=2021-02-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.Network",
+								"networkInterfaces"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-02-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Disks List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.Compute/disks?api-version=2020-12-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.Compute",
+								"disks"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2020-12-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Data About VM",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupID}}/providers/Microsoft.Compute/virtualMachines/{{virtualMachineName}}?api-version=2021-07-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"resourceGroups",
+								"{{resourceGroupID}}",
+								"providers",
+								"Microsoft.Compute",
+								"virtualMachines",
+								"{{virtualMachineName}}"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-07-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Activity Log",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/microsoft.insights/eventtypes/management/values?api-version=2017-03-01-preview&%24filter=eventTimestamp%20ge%20'2021-08-22T12%3A31%3A41Z'%20and%20eventTimestamp%20le%20'2021-09-21T12%3A31%3A41Z'%20and%20eventChannels%20eq%20'Admin%2C%20Operation'%20and%20resourceGroupName%20eq%20'TURKISH_ACTIVITIES'%20and%20resourceId%20eq%20'%2Fsubscriptions%2Feac4bec0-ba01-4eb2-803c-2a6c34869126%2FresourceGroups%2FTURKISH_ACTIVITIES%2Fproviders%2FMicrosoft.Compute%2FvirtualMachines%2Ftc132-awc52ewi-OOTB'%20and%20categories%20eq%20'Administrative'%20and%20levels%20eq%20'Critical%2CError%2CWarning%2CInformational'\"",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"microsoft.insights",
+								"eventtypes",
+								"management",
+								"values"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2017-03-01-preview"
+								},
+								{
+									"key": "%24filter",
+									"value": "eventTimestamp%20ge%20'2021-08-22T12%3A31%3A41Z'%20and%20eventTimestamp%20le%20'2021-09-21T12%3A31%3A41Z'%20and%20eventChannels%20eq%20'Admin%2C%20Operation'%20and%20resourceGroupName%20eq%20'TURKISH_ACTIVITIES'%20and%20resourceId%20eq%20'%2Fsubscriptions%2Feac4bec0-ba01-4eb2-803c-2a6c34869126%2FresourceGroups%2FTURKISH_ACTIVITIES%2Fproviders%2FMicrosoft.Compute%2FvirtualMachines%2Ftc132-awc52ewi-OOTB'%20and%20categories%20eq%20'Administrative'%20and%20levels%20eq%20'Critical%2CError%2CWarning%2CInformational'\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Instance View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupID}}/providers/Microsoft.Compute/virtualMachines/{{virtualMachineName}}/instanceView?api-version=2021-07-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"resourceGroups",
+								"{{resourceGroupID}}",
+								"providers",
+								"Microsoft.Compute",
+								"virtualMachines",
+								"{{virtualMachineName}}",
+								"instanceView"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-07-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupID}}/providers/Microsoft.Compute/virtualMachines/tc132-awc52ewi-OOTB?api-version=2021-03-01&$expand=instanceView",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"resourceGroups",
+								"{{resourceGroupID}}",
+								"providers",
+								"Microsoft.Compute",
+								"virtualMachines",
+								"tc132-awc52ewi-OOTB"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-03-01"
+								},
+								{
+									"key": "$expand",
+									"value": "instanceView"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "https://docs.microsoft.com/en-us/rest/api/compute/"
+		},
+		{
+			"name": "COST Data",
+			"item": [
+				{
+					"name": "Get Budgets List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.Consumption/budgets?api-version=2019-10-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.Consumption",
+								"budgets"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2019-10-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cost Data By VM Disk",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"ActualCost\",\r\n    \"dataSet\": {\r\n        \"granularity\": \"None\",\r\n        \"aggregation\": {\r\n            \"totalCost\": {\r\n                \"name\": \"Cost\",\r\n                \"function\": \"Sum\"\r\n            },\r\n            \"totalCostUSD\": {\r\n                \"name\": \"CostUSD\",\r\n                \"function\": \"Sum\"\r\n            }\r\n        },\r\n        \"grouping\": [\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceId\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceLocation\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ChargeType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceGroupName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"PublisherType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceTier\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"Meter\"\r\n            }\r\n        ],\r\n        \"include\": [\r\n            \"Tags\"\r\n        ],\r\n        \"filter\": {\r\n            \"And\": [\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceType\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"microsoft.compute/disks\"\r\n                        ]\r\n                    }\r\n                },\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceId\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"/subscriptions/{{subscriptionId}}/resourcegroups/{{resourceGroupID}}/providers/microsoft.compute/disks/{{virtualMachineDisk}}\"\r\n                        ]\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"timeframe\": \"TheLastBillingMonth\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.CostManagement/query?api-version=2019-11-01&$top=5000",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.CostManagement",
+								"query"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2019-11-01"
+								},
+								{
+									"key": "$top",
+									"value": "5000"
+								}
+							]
+						},
+						"description": "https://docs.microsoft.com/en-us/cli/azure/costmanagement?view=azure-cli-latest\n\nhttps://docs.microsoft.com/en-us/rest/api/cost-management/query/usage"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cost Data By VM Network",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"ActualCost\",\r\n    \"dataSet\": {\r\n        \"granularity\": \"None\",\r\n        \"aggregation\": {\r\n            \"totalCost\": {\r\n                \"name\": \"Cost\",\r\n                \"function\": \"Sum\"\r\n            },\r\n            \"totalCostUSD\": {\r\n                \"name\": \"CostUSD\",\r\n                \"function\": \"Sum\"\r\n            }\r\n        },\r\n        \"grouping\": [\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceId\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceLocation\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ChargeType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceGroupName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"PublisherType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceTier\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"Meter\"\r\n            }\r\n        ],\r\n        \"include\": [\r\n            \"Tags\"\r\n        ],\r\n        \"filter\": {\r\n            \"And\": [\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceType\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"microsoft.network/publicipaddresses\"\r\n                        ]\r\n                    }\r\n                },\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceId\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"/subscriptions/{{subscriptionId}}/resourcegroups/{{resourceGroupID}}/providers/microsoft.network/publicipaddresses/{{virtualMachineNetwork}}\"\r\n                        ]\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"timeframe\": \"TheLastBillingMonth\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.CostManagement/query?api-version=2019-11-01&$top=5000",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.CostManagement",
+								"query"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2019-11-01"
+								},
+								{
+									"key": "$top",
+									"value": "5000"
+								}
+							]
+						},
+						"description": "https://docs.microsoft.com/en-us/cli/azure/costmanagement?view=azure-cli-latest\n\nhttps://docs.microsoft.com/en-us/rest/api/cost-management/query/usage"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cost By VM",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"ActualCost\",\r\n    \"dataSet\": {\r\n        \"granularity\": \"None\",\r\n        \"aggregation\": {\r\n            \"totalCost\": {\r\n                \"name\": \"Cost\",\r\n                \"function\": \"Sum\"\r\n            },\r\n            \"totalCostUSD\": {\r\n                \"name\": \"CostUSD\",\r\n                \"function\": \"Sum\"\r\n            }\r\n        },\r\n        \"grouping\": [\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceId\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceLocation\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ChargeType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ResourceGroupName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"PublisherType\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceName\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"ServiceTier\"\r\n            },\r\n            {\r\n                \"type\": \"Dimension\",\r\n                \"name\": \"Meter\"\r\n            }\r\n        ],\r\n        \"include\": [\r\n            \"Tags\"\r\n        ],\r\n        \"filter\": {\r\n            \"And\": [\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceType\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"microsoft.compute/virtualmachines\"\r\n                        ]\r\n                    }\r\n                },\r\n                {\r\n                    \"Dimensions\": {\r\n                        \"Name\": \"ResourceId\",\r\n                        \"Operator\": \"In\",\r\n                        \"Values\": [\r\n                            \"/subscriptions/{{subscriptionId}}/resourcegroups/{{resourceGroupID}}/providers/microsoft.compute/virtualmachines/{{virtualMachineName}}\"\r\n                        ]\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"timeframe\": \"BillingMonthToDate\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscriptionId}}/providers/Microsoft.CostManagement/query?api-version=2019-11-01&$top=5000",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}",
+								"providers",
+								"Microsoft.CostManagement",
+								"query"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2019-11-01"
+								},
+								{
+									"key": "$top",
+									"value": "5000"
+								}
+							]
+						},
+						"description": "https://docs.microsoft.com/en-us/cli/azure/costmanagement?view=azure-cli-latest\n\nhttps://docs.microsoft.com/en-us/rest/api/cost-management/query/usage"
+					},
+					"response": []
+				}
+			],
+			"description": "https://docs.microsoft.com/en-us/rest/api/cost-management/"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearerToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Check for collectionVariables\", function () {",
+					"    let vars = ['clientId', 'clientSecret', 'tenantId', 'subscriptionId'];",
+					"    vars.forEach(function (item, index, array) {",
+					"        console.log(item, index);",
+					"        pm.expect(pm.collectionVariables.get(item), item + \" variable not set\").to.not.be.undefined;",
+					"        pm.expect(pm.collectionVariables.get(item), item + \" variable not set\").to.not.be.empty; ",
+					"    });",
+					"",
+					"    if (!pm.collectionVariables.get(\"bearerToken\") || Date.now() > new Date(pm.collectionVariables.get(\"bearerTokenExpiresOn\") * 1000)) {",
+					"        pm.sendRequest({",
+					"            url: 'https://login.microsoftonline.com/' + pm.collectionVariables.get(\"tenantId\") + '/oauth2/token',",
+					"            method: 'POST',",
+					"            header: 'Content-Type: application/x-www-form-urlencoded',",
+					"            body: {",
+					"                mode: 'urlencoded',",
+					"                urlencoded: [",
+					"                    { key: \"grant_type\", value: \"client_credentials\", disabled: false },",
+					"                    { key: \"client_id\", value: pm.collectionVariables.get(\"clientId\"), disabled: false },",
+					"                    { key: \"client_secret\", value: pm.collectionVariables.get(\"clientSecret\"), disabled: false },",
+					"                    { key: \"resource\", value: pm.collectionVariables.get(\"resource\") || \"https://management.azure.com/\", disabled: false }",
+					"                ]",
+					"            }",
+					"        }, function (err, res) {",
+					"            if (err) {",
+					"                console.log(err);",
+					"            } else {",
+					"                let resJson = res.json();",
+					"                pm.collectionVariables.set(\"bearerTokenExpiresOn\", resJson.expires_on);",
+					"                pm.collectionVariables.set(\"bearerToken\", resJson.access_token);",
+					"            }",
+					"        });",
+					"    }",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "clientId",
+			"value": ""
+		},
+		{
+			"key": "clientSecret",
+			"value": ""
+		},
+		{
+			"key": "tenantId",
+			"value": ""
+		},
+		{
+			"key": "subscriptionId",
+			"value": ""
+		},
+		{
+			"key": "resource",
+			"value": "https://management.azure.com/"
+		},
+		{
+			"key": "resourceGroupID",
+			"value": "POLARION4DEMONEEDS"
+		},
+		{
+			"key": "virtualMachineName",
+			"value": "plcentral002"
+		},
+		{
+			"key": "virtualMachineDisk",
+			"value": "plcentral002-osdisk-20210520-060832"
+		},
+		{
+			"key": "virtualMachineNetwork",
+			"value": "plcentral002869"
+		},
+		{
+			"key": "bearerTokenExpiresOn",
+			"value": ""
+		},
+		{
+			"key": "bearerToken",
+			"value": ""
+		}
+	]
+}
